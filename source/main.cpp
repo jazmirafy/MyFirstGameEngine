@@ -134,11 +134,18 @@ int main()
     //creating triangle structure
     std::vector<float> vertices =
     {
-        0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, //vertex 1
-        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, //vertex 2
-        0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f // vertex 3 
+        0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, //vertex 1
+        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, //vertex 2
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // vertex 3 
+        0.5, -0.5, 0.0f, 1.0f, 1.0f, 0.0f //vertex 4
     };
 
+
+    //defining square shape as two triangles with indices
+    std::vector<unsigned int> indices = {
+        0, 1, 2,
+        0, 2, 3
+    };
     //upload triangle vertex data to gpu memory using buffer
     GLuint vbo;
     glGenBuffers(1, &vbo);
@@ -146,11 +153,19 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    //ebo tells open gl which vertices to draw and in what order
+    GLuint ebo;
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     //tell graphics pipeline/shader program how to interpret our data when it reaches the vertex shader
     GLuint vao;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, false , 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
@@ -172,7 +187,7 @@ int main()
         //bind vao containing our vertex layout
         glBindVertexArray(vao);
         //render triangle
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         //swapping the buffer so we can actually see the colored background
         glfwSwapBuffers(window);
 
