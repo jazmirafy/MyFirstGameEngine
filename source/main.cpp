@@ -3,6 +3,45 @@
 #include <iostream>
 #include <vector>
 #include <string>
+
+struct Vec2 {
+
+    float x = 0.0f;
+    float y = 0.0f;
+};
+
+Vec2 offset;
+
+//notify us when keypress occurs
+void keyCallback(GLFWwindow* window, int key, int scanCode, int action, int mods) {
+
+    //check if key was pressed
+    if (action == GLFW_PRESS) {
+        //check which key was pressed
+        switch (key) {
+
+        case GLFW_KEY_UP:
+            std::cout << "GLFW_KEY_UP" << std::endl;
+            offset.y += 0.8f;
+            break;
+        case GLFW_KEY_DOWN:
+            std::cout << "GLFW_KEY_DOWN" << std::endl;
+            offset.y -= 0.8f;
+            break;
+        case GLFW_KEY_RIGHT:
+            std::cout << "GLFW_KEY_RIGHT" << std::endl;
+            offset.x += 0.9f;
+            break;
+        case GLFW_KEY_LEFT:
+            std::cout << "GLFW_KEY_LEFT" << std::endl;
+            offset.x -= 0.8f;
+            break;
+        default:
+            break;
+            
+        }
+    }
+}
 int main()
 {
     //initialize library
@@ -29,7 +68,9 @@ int main()
         glfwTerminate();
         return -1;
     }
-    //if the window was successfully created enter the main event loop
+    
+    //setting a key callback to handle input events
+    glfwSetKeyCallback(window, keyCallback);
 
     //set window position
     //glfwSetWindowPos(window, -, -);
@@ -47,13 +88,15 @@ int main()
         #version 330 core
         layout (location = 0) in vec3 position;
         layout (location = 1) in vec3 color;
+
+        uniform vec2 uOffset;
         
         out vec3 vColor;
 
 
         void main(){
             vColor = color;
-            gl_Position = vec4(position.x, position.y, position.z, 1.0);
+            gl_Position = vec4(position.x + uOffset.x, position.y + uOffset.y, position.z, 1.0);
         }
     )";
     //create shader in graphics card
@@ -176,9 +219,12 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    //get uniform locations
     GLint uColorLoc = glGetUniformLocation(shaderProgram, "uColor");
-    
+    GLint uOffsetLoc = glGetUniformLocation(shaderProgram, "uOffset");
 
+    
+    //if the window was successfully created enter the main event loop
     while(!glfwWindowShouldClose(window)) {
         
         //change window background color
@@ -188,8 +234,10 @@ int main()
         //activate shader program
         glUseProgram(shaderProgram);
 
-        //activate uniform which is a global gpu variable sent from the cpu to gpu we can use to tint the whole shape
+        //activate uniform which is a global gpu variable sent from the cpu to gpu 
         glUniform4f(uColorLoc, 1.0f, 0.0f, 0.0f, 0.0f);
+
+        glUniform2f(uOffsetLoc, offset.x, offset.y);
 
         //bind vao containing our vertex layout
         glBindVertexArray(vao);
