@@ -8,7 +8,7 @@ namespace eng {
 	public:
 
 		Mesh(const VertexLayout& layout, const std::vector<float>& vertices, const std::vector<uint32_t>& indices);
-		Mesh(const VertexLayout& layout, const std::vector<float>& vertices
+		Mesh(const VertexLayout& layout, const std::vector<float>& vertices);
 		//disable copy and assignment to avoid accidental resource duplication
 		Mesh(const Mesh&) = delete;
 		Mesh& operator=(const Mesh&) = delete;
