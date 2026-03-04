@@ -1,6 +1,9 @@
+//gives unified component access
+
 #include "graphics/GraphicsAPI.h"
 #include "graphics/ShaderProgram.h"
 #include "render/Material.h"
+#include "render/Mesh.h"
 #include <iostream>
 namespace eng {
 
@@ -87,6 +90,12 @@ namespace eng {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         return EBO;
     }
+    void  GraphicsAPI::SetClearColor(float r, float g, float b, float a) {
+        glClearColor(r, g, b, a);
+    }
+    void  GraphicsAPI::ClearBuffers() {
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
 
     void GraphicsAPI::BindShaderProgram(ShaderProgram* shaderProgram) {
 
@@ -99,6 +108,16 @@ namespace eng {
 
         if (material) {
             material->Bind();
+        }
+    }
+    void GraphicsAPI::BindMesh(Mesh* mesh) {
+        if (mesh) {
+            mesh->Bind();
+        }
+    }
+    void GraphicsAPI::DrawMesh(Mesh* mesh) {
+        if (mesh) {
+            mesh->Draw();
         }
     }
 

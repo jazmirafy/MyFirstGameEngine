@@ -79,8 +79,7 @@ namespace eng {
 		}
 
 		m_lastTimePoint = std::chrono::high_resolution_clock::now();
-		//main game loop lives here
-		//until the window or application needs to close run the main loop
+
 		while (!glfwWindowShouldClose(m_window) && !m_application->NeedsToBeClosed()) {
 			//process input
 			glfwPollEvents();
@@ -92,12 +91,19 @@ namespace eng {
 
 			m_application->Update(deltaTime);
 
-			//swap buffers so you can see whats been drawn
+		
+			m_graphicsAPI.SetClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			m_graphicsAPI.ClearBuffers();
+
+			
+			m_renderQueue.Draw(m_graphicsAPI);
+
+
 			glfwSwapBuffers(m_window);
 
 		}
 	}
-	//free up resources
+
 	void Engine::Destroy() {
 
 		if (m_application) {
@@ -123,4 +129,9 @@ namespace eng {
 
 		return m_graphicsAPI;
 	}
+	RenderQueue& Engine::GetRenderQueue() {
+
+		return m_renderQueue;
+	}
+
 }

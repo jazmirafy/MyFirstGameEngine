@@ -9,6 +9,10 @@ namespace eng {
 	void Material::SetParam(const std::string& name, float value) {
 		m_floatParams[name] = value;
 	}
+	void Material::SetParam(const std::string& name, float v0, float v1) {
+		m_float2Params[name] = { v0, v1 };
+	}
+
 	//activates material, binds shader and sets all uniforms
 	void Material::Bind() {
 		if (!m_shaderProgram) {
@@ -21,6 +25,12 @@ namespace eng {
 			m_shaderProgram->SetUniform(param.first, param.second);
 
 		}
+		for (auto& param : m_float2Params) {
+
+			m_shaderProgram->SetUniform(param.first, param.second.first, param.second.second);
+
+		}
+
 	}
 
 }
