@@ -84,15 +84,16 @@ namespace eng {
 			//process input
 			glfwPollEvents();
 			
-			//each frame compute delta time from the current time
 			auto now = std::chrono::high_resolution_clock::now();
 			float deltaTime = std::chrono::duration<float>(now - m_lastTimePoint).count();
 			m_lastTimePoint = now;
 
+			//update game/application logic
 			m_application->Update(deltaTime);
 
 		
-			m_graphicsAPI.SetClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			//render
+			m_graphicsAPI.SetClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 			m_graphicsAPI.ClearBuffers();
 
 			
